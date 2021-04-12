@@ -1,0 +1,1 @@
+check-scripts: *.sh ; shellcheck -x *.sh ;
