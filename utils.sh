@@ -18,22 +18,33 @@ function enable_strict_mode() {
 }
 
 # Assertions shell library "is.sh" functions
-function dl_issh() { wget raw.githubusercontent.com/qzb/is.sh/latest/is.sh; }
+function dl_issh() { 
+    mkdir -p lib
+    cd lib
+    wget raw.githubusercontent.com/qzb/is.sh/latest/is.sh
+    cd -
+}
 
-function cleanup_issh() { rm ./is.sh*; }
+function cleanup_issh() { rm -f lib/is.sh* ; }
 
-function use_issh() { source ./is.sh; }
+function use_issh() { 
+    # shellcheck source=lib/is.sh
+    source "${0%/*}"/lib/is.sh
+}
 
 # Golang functions
 function install_golang_latest() {
 
   local GOTOOLS="${HOME}/go/tools"
-  cd "${GOTOOLS}";
   local DL_HOME=https://golang.org
-  local DL_PATH_URL="$(wget --no-check-certificate -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -n 1)"
-  local LATEST_VERSION_PATTERN="$(echo ${DL_PATH_URL} | grep -oP 'go[0-9\.]+' | grep -oP '[0-9\.]+' | head -c -2 )"
+  local DL_PATH_URL
+  local LATEST_VERSION_PATTERN
+  local LATEST
+  cd "${GOTOOLS}";
+  DL_PATH_URL="$(wget --no-check-certificate -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -n 1)"
+  LATEST_VERSION_PATTERN=$(echo "${DL_PATH_URL}" | grep -oP 'go[0-9\.]+' | grep -oP '[0-9\.]+' | head -c -2 )
   echo "Finding latest version of Go for AMD64..."
-  local LATEST="$(find ${GOTOOLS} -name "go*" -type f | head -n 1)"
+  LATEST=$(find "${GOTOOLS}" -name "go*" -type f | head -n 1)
   mkdir -p "${GOTOOLS}"
   echo "Downloading latest Go for AMD64: ${LATEST_VERSION_PATTERN}"
   wget --no-check-certificate --continue --show-progress "${DL_HOME}${DL_PATH_URL}" -P "${GOTOOLS}"

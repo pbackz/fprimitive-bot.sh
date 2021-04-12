@@ -59,6 +59,7 @@ function process() {
   local VERBOSITY=True
   #local STATIC_SHAPE=False
   # BACKGROUND_COLOR="#FF"
+  # TODO : impl argument config tracer to reproduce the better result output images
   
   if is empty "${3}"; then
     SHAPE=$(shuf -i 0-9 -n 1 --random-source=/dev/urandom)
@@ -75,7 +76,7 @@ function process() {
       COUNTER=0
       while [ "${SHAPE}" -le 9 ] && [ "${VERBOSITY}" == "True" ] && [ "${COUNTER}" -ne 50 ]; do
           "${PRIMITIVE_BINARY}" \
-          -i "${DATA_INPUT_DIR}"/"${IMAGE}" \
+          -i "${IMAGE}" \
           -o "${DATA_OUTPUT_DIR}/${FILE_PREFIX}.$(date +"%m-%d-%Y-%H-%M-%S").png" \
           -m "${SHAPE}" \
           -rep "${EXTRA_SHAPES}" \
