@@ -1,3 +1,6 @@
-check-scripts: *.sh ; shellcheck -x *.sh ;
+all := $(wildcard *.sh)
+lib := lib/is.sh
 
-check-primitive: fprimitive-bot.sh ; shellcheck -x fprimitive-bot.sh ; 
+check-all: ; shellcheck -x $(all)
+
+check-lib: ; shellcheck -x $(lib)
