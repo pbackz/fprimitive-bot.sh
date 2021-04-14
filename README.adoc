@@ -1,0 +1,13 @@
+= fprimitive-bot.sh
+Pierre Baconnier <pierre.baconnier@outlook.fr>
+v0.1, 2021-04-14
+:homepage: https://github.com/pbackz/fprimitve-bot.sh
+:toc:
+:experimental:
+:source-highlighter: prettify
+
+== Abstract
+
+== Usage
+
+== Utilities

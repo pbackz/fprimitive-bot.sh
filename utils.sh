@@ -25,7 +25,7 @@ function dl_issh() {
     cd -
 }
 
-function cleanup_issh() { rm -f lib/is.sh* ; }
+function cleanup_issh() { rm -f "${0%/*}"/lib/is.sh* ; }
 
 function use_issh() { 
     # shellcheck source=lib/is.sh
@@ -57,3 +57,14 @@ function install_golang_latest() {
 
 }
 
+function jpeg_to_png() {
+  set -- "${@}"
+  local OUTPUT_PREFIX
+  local DATA_RETENTION_DIR="${1}"
+  local DATA_OUTPUT_DIR="${2}"
+  OUTPUT_PREFIX=$(date +"%m-%d-%Y-%H-%M-%S")
+  find "${DATA_RETENTION_DIR}" -maxdepth 1 -type f | while read -r JPEG_IMAGE; do
+      DATA_OUTPUT_NAME=$(echo "${JPEG_IMAGE}" | cut -d '.' -f1)
+      convert "${JPEG_IMAGE}" "${DATA_OUTPUT_DIR}"/"${DATA_OUTPUT_NAME}"."${OUTPUT_PREFIX}".png
+  done
+}
