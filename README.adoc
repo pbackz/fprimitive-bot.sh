@@ -8,11 +8,77 @@ v0.1, 2021-04-14
 
 == Abstract
 
+This tool is freely inspired by fogleman/primitive and uses the go binary associated with the project. 
+It aims to allow you to automate and fully control the generation of single random images in series.
+
+== Installation
+
+[source,bash]
+----
+git clone https://github.com/pbackz/fprimitive-bot.sh
+----
+
+== Use with docker
+
+[source,bash]
+----
+docker run -it docker.io/pbackz/fprimitive-bot:latest
+----
+
 == Usage
 
 [source,bash]
 ----
+./fprimitive-bot.sh --help
+go: finding module for package golang.org/x/image/math/fixed
+go: finding module for package github.com/fogleman/gg
+go: finding module for package github.com/nfnt/resize
+go: finding module for package github.com/golang/freetype/raster
+go: found github.com/nfnt/resize in github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+go: found github.com/fogleman/gg in github.com/fogleman/gg v1.3.0
+go: found github.com/golang/freetype/raster in github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+go: found golang.org/x/image/math/fixed in golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
+Less or equal 2 minimum arguments
+Automation script to generate random unique image series using fogleman/primitive
 
+USAGE: ./fprimitive-bot.sh <DATA_INPUT_DIR> <DATA_OUTPUT_DIR>
+                           <SHAPE:-{0..9}>
+                           <EXTRA_SHAPES:-{0..175}>
+                           <PRIMITIVES_NB:{1..9}>
+                           [-a=<alpha>|--alpha-value=<alpha:-128>]
+                           [-o=<output_size:-1024>|--output-size=<output_size:-1024>]
+                           [-p=<prefix:-output_>|--file-prefix=<prefix:-output_>]
+                           [-v=<verbose:-true>|--verbosity=<verbose:-true>]
+  Where:
+    DATA_INPUT_DIR         Required. The source directory to store images before processing. Must be 1st arg
+    DATA_OUTPUT_DIR        Required. The destination directory to store images after processing. Must be 2nd arg
+    SHAPE                  The form of shape. Valid values are {0..9}. Must be 3rd arg
+    EXTRA_SHAPES           The number of extra shapes. Recommanded values are {0..175}. Must be 4th arg
+    PRIMITIVES_NB          The number of primitives. Recommanded values are {1..12}. Must be 5th arg
+    -h or --help           Show help
+    -a or --alpha-value    Alpha value of image output. Default is 128
+    -o or --output-size    Image output size. Default is 1024
+    -p or --file-prefix    File prefix in output directory. Default is 'output_'
+    -v or --verbosity      Set or not verbosity. Default is true
 ----
 
 == Utilities
+
+This section was inspired by the assumption that some of the image sources you want to use may be in JPEG. 
+However primitive can only handle png files. 
+So the following function allows the conversion of JPEG images to PNG before processing by primitive.
+
+[source,bash]
+----
+source utils.sh
+
+ll data_jpg/
+-rwxrwxrwx 1 pbackz pbackz 1630303 Sep 13 05:35 gaspard-de-la-nuit.jpg
+
+jpeg_to_png data_jpg output
+> file found: ./data_jpg/gaspard-de-la-nuit.jpg
+> output file destination: output/gaspard-de-la-nuit.png
+
+ll output/gaspard-de-la-nuit.png
+-rwxrwxrwx 1 pbackz pbackz 1586489 Sep 13 05:41 output/gaspard-de-la-nuit.png
+----

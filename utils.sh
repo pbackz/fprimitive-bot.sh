@@ -33,10 +33,11 @@ function jpeg_to_png() {
   local OUTPUT_PREFIX
   local DATA_RETENTION_DIR="${1}"
   local DATA_OUTPUT_DIR="${2}"
-  OUTPUT_PREFIX=$(date +"%m-%d-%Y-%H-%M-%S")
   find "${DATA_RETENTION_DIR}" -maxdepth 1 -type f | while read -r JPEG_IMAGE; do
-      DATA_OUTPUT_NAME=$(echo "${JPEG_IMAGE}" | cut -d '.' -f1)
-      # require 'imagemagick'
-      convert "${JPEG_IMAGE}" "${DATA_OUTPUT_DIR}"/"${DATA_OUTPUT_NAME}"."${OUTPUT_PREFIX}".png
+      DATA_OUTPUT_NAME=$(echo "${JPEG_IMAGE}" | cut -d '/' -f2 | cut -d '.' -f1)
+      # require magick binary
+      echo "file found: ./${JPEG_IMAGE}"
+      echo "output file destination: ${DATA_OUTPUT_DIR}/${DATA_OUTPUT_NAME}.png"
+      ./magick convert ./"${JPEG_IMAGE}" "${DATA_OUTPUT_DIR}"/"${DATA_OUTPUT_NAME}".png
   done
 }
