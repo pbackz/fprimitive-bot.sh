@@ -36,23 +36,23 @@ function use_issh() {
 
 # Golang functions
 function install_golang_latest() {
-  local GOTOOLS="${HOME}/go/tools"
+  local GOTOOLS="/usr/local/go"
   local DL_HOME=https://golang.org
   local DL_PATH_URL
   local LATEST_VERSION_PATTERN
   local LATEST
-  cd "${GOTOOLS}";
+  mkdir -p "${GOTOOLS}"
+  cd "${GOTOOLS}"
   DL_PATH_URL="$(wget --no-check-certificate -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -n 1)"
   LATEST_VERSION_PATTERN=$(echo "${DL_PATH_URL}" | grep -oP 'go[0-9\.]+' | grep -oP '[0-9\.]+' | head -c -2 )
   echo "Finding latest version of Go for AMD64..."
-  LATEST=$(find "${GOTOOLS}" -name "go*" -type f | head -n 1)
-  mkdir -p "${GOTOOLS}"
+  LATEST=$(find "${GOTOOLS}" -iname "*${LATEST_VERSION_PATTERN}*" -type f | head -n 1)
   echo "Downloading latest Go for AMD64: ${LATEST_VERSION_PATTERN}"
   wget --no-check-certificate --continue --show-progress "${DL_HOME}${DL_PATH_URL}" -P "${GOTOOLS}"
   echo "LATEST: ${LATEST}"
-  tar -xavf "${GOTOOLS}/${LATEST}"; rm "${GOTOOLS}/${LATEST}.tar.gz"; cd -
-  export GOBIN="${GOTOOLS}/go/bin"
-  export GOPATH="${GOTOOLS}/go/src"
+  tar -xzvf "${LATEST}"; cd -
+  export GOBIN="${GOTOOLS}/bin"
+  export GOPATH="${GOTOOLS}/src"
   export PATH="${PATH}:${GOBIN}"
   unset GOTOOLS, DL_HOME, DL_PATH_URL, LATEST_VERSION_PATTERN, LATEST
 }

@@ -71,7 +71,7 @@ function process() {
     PRIMITIVES_NB=$(shuf -i 1-9 -n 1 --random-source=/dev/urandom)
   fi
           
-  #find "${DATA_INPUT_DIR}" -type f # shellcheck recommandation
+  #find "${DATA_INPUT_DIR}" -type f # shellcheck recommandation # TODO
   find "${DATA_INPUT_DIR[@]}" -maxdepth 1 -type f | while read -r IMAGE; do
       COUNTER=0
       while [ "${SHAPE}" -le 9 ] && [ "${VERBOSITY}" == "True" ] && [ "${COUNTER}" -ne 50 ]; do
@@ -97,10 +97,6 @@ function process() {
           COUNTER=$((COUNTER+1))
       done
   done
-
-  #unset DATA_INPUT_DIR, DATA_OUTPUT_DIR, SHAPE, EXTRA_SHAPES, PRIMITIVE_NB, ALPHA_VALUE, OUTPUT_IMG_SIZE, FILE_PREFIX, VERBOSITY, STATIC_SHAPE
 }
-
-#ssh -L 127.0.0.1:5432:localhost:5432 me@host69
 
 main "${@}"
