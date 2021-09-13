@@ -34,7 +34,6 @@ function use_issh() {
 
 # Golang functions
 function install_golang_latest() {
-
   local GOTOOLS="${HOME}/go/tools"
   local DL_HOME=https://golang.org
   local DL_PATH_URL
@@ -54,7 +53,6 @@ function install_golang_latest() {
   export GOPATH="${GOTOOLS}/go/src"
   export PATH="${PATH}:${GOBIN}"
   unset GOTOOLS, DL_HOME, DL_PATH_URL, LATEST_VERSION_PATTERN, LATEST
-
 }
 
 function jpeg_to_png() {
@@ -65,6 +63,7 @@ function jpeg_to_png() {
   OUTPUT_PREFIX=$(date +"%m-%d-%Y-%H-%M-%S")
   find "${DATA_RETENTION_DIR}" -maxdepth 1 -type f | while read -r JPEG_IMAGE; do
       DATA_OUTPUT_NAME=$(echo "${JPEG_IMAGE}" | cut -d '.' -f1)
+      # require 'imagemagick'
       convert "${JPEG_IMAGE}" "${DATA_OUTPUT_DIR}"/"${DATA_OUTPUT_NAME}"."${OUTPUT_PREFIX}".png
   done
 }
