@@ -7,7 +7,8 @@ ENV GLIBC_VERSION=2.30-r0
 
 # need GNU tools and not busybox eponym binaries
 RUN apk update && \
-    apk --no-cache add imagemagick bash git grep wget && \
+    apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils \
+    imagemagick bash git grep wget && \
     git clone https://github.com/pbackz/fprimitive-bot.sh && \
     rm /bin/sh && \
     ln -s /bin/bash /bin/sh

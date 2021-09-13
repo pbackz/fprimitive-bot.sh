@@ -3,7 +3,7 @@
 ###################################################################
 # Script Name	  : fprimitive-bot.sh                                                                                           
 # Description	  : A simple bot which use fogelman/primitive
-#                   binary to generate unique random image series                                                                                           
+#                 binary to generate unique random image series                                                                                           
 # Author       	  : Pierre Baconnier                                                
 # Email           : pbackz@gmail.com
 # Last updated on : 2021/13/09                                         
@@ -12,15 +12,67 @@
 source ./utils.sh
 enable_strict_mode
 
-if ! [[ "${#}" -ge 1 ]]; then
-  #usage
-  exit 1
-fi
+function usage() {
+  echo "Automation script to generate random unique image series using fogleman/primitive"
+  echo ""
+  echo "USAGE: ./fprimitive-bot.sh <DATA_INPUT_DIR> <DATA_OUTPUT_DIR>"
+  echo "                           <SHAPE:-{0..9}>"
+  echo "                           <EXTRA_SHAPES:-{0..175}>"
+  echo "                           <PRIMITIVES_NB:{1..9}>"
+  echo "                           [-a=<alpha>|--alpha-value=<alpha:-128>]"
+  echo "                           [-o=<output_size:-1024>|--output-size=<output_size:-1024>]"
+  echo "                           [-p=<prefix:-output_>|--file-prefix=<prefix:-output_>]"
+  echo "                           [-v=<verbose:-true>|--verbosity=<verbose:-true>]"
+  echo "  Where:"
+  echo "    DATA_INPUT_DIR         Required. The source directory to store images before processing. Must be 1st arg"
+  echo "    DATA_OUTPUT_DIR        Required. The destination directory to store images after processing. Must be 2nd arg"
+  echo "    SHAPE                  The form of shape. Valid values are {0..9}. Must be 3rd arg"
+  echo "    EXTRA_SHAPES           The number of extra shapes. Recommanded values are {0..175}. Must be 4th arg"
+  echo "    PRIMITIVES_NB          The number of primitives. Recommanded values are {1..12}. Must be 5th arg"
+  echo "    -h or --help           Show help"
+  echo "    -a or --alpha-value    Alpha value of image output. Default is 128"
+  echo "    -o or --output-size    Image output size. Default is 1024"
+  echo "    -p or --file-prefix    File prefix in output directory. Default is 'output_'"
+  echo "    -v or --verbosity      Set or not verbosity. Default is true"
+  echo " "
+  exit
+}
+
+function processArgs() {
+  if [ $# -eq 0 ]; then
+    echo "No arguments supplied"
+    usage; else
+    for i in $ARGS ; do
+      case $i in
+      -h|--help)
+        usage
+        ;;
+      -a=*|--alpha-value=*)
+        ALPHA_VALUE="${i#*=}"
+        ;;
+      -o=*|--output-size=*)
+        OUTPUT_IMG_SIZE="${i#*=}"
+        ;;
+      -p=*|--file-prefix=*)
+        FILE_PREFIX="${i#*=}"
+        ;;
+      -v|--verbosity)
+        VERBOSITY="${i#*=}"
+        ;;
+      esac
+    done
+  fi
+  if [ $# -lt 2 ]; then
+    echo "Less or equal 2 minimum arguments"
+    usage; exit;
+  fi
+}
 
 function main() {
   set -- "${@}"
   use_issh
   install_requirements
+  processArgs "${@}" 
   process "${@}"
 }
 
@@ -33,9 +85,6 @@ function install_requirements() {
   if is not available "primitive"; then
     go install github.com/fogleman/primitive@latest
   fi
-  if is not available "shuf"; then
-    apk add util-linux pciutils usbutils coreutils binutils findutils
-  fi
 }
 
 function process() {
@@ -44,9 +93,9 @@ function process() {
   local PRIMITIVE_BINARY
   local DATA_INPUT_DIR="${1}"
   local DATA_OUTPUT_DIR="${2}"
-  local SHAPE="${3}"
-  local EXTRA_SHAPES="${4}" # flag '-rep'
-  local PRIMITIVES_NB="${5}"
+  #local SHAPE="${3}"
+  #local EXTRA_SHAPES="${4}" # flag '-rep'
+  #local PRIMITIVES_NB="${5}"
   PRIMITIVE_BINARY=${PRIMITIVE_BINARY:-$HOME/go/bin/primitive}
   # "-j" option = Parallel workers. Default value = all cores. Ref. $(primitive --help)
   local ALPHA_VALUE=128 # default value = 128. Ref. $(primitive --help)
