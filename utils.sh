@@ -17,18 +17,6 @@ function enable_strict_mode() {
   trap 'on_error ${LINENO} $?' ERR
 }
 
-# Assertions shell library "is.sh" functions
-function dl_issh() { 
-    mkdir -p lib
-    cd lib
-    if [ -f is.sh ]; then echo; else
-      wget raw.githubusercontent.com/qzb/is.sh/latest/is.sh
-    fi
-    cd -
-}
-
-function cleanup_issh() { rm -f "${0%/*}"/lib/is.sh* ; }
-
 function use_issh() { 
     # shellcheck source=lib/is.sh
     source "${0%/*}"/lib/is.sh
@@ -36,25 +24,8 @@ function use_issh() {
 
 # Golang functions
 function install_golang_latest() {
-  local GOTOOLS="/usr/local/go"
-  local DL_HOME=https://golang.org
-  local DL_PATH_URL
-  local LATEST_VERSION_PATTERN
-  local LATEST
-  mkdir -p "${GOTOOLS}"
-  cd "${GOTOOLS}"
-  DL_PATH_URL="$(wget --no-check-certificate -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -n 1)"
-  LATEST_VERSION_PATTERN=$(echo "${DL_PATH_URL}" | grep -oP 'go[0-9\.]+' | grep -oP '[0-9\.]+' | head -c -2 )
-  echo "Finding latest version of Go for AMD64..."
-  LATEST=$(find "${GOTOOLS}" -iname "*${LATEST_VERSION_PATTERN}*" -type f | head -n 1)
-  echo "Downloading latest Go for AMD64: ${LATEST_VERSION_PATTERN}"
-  wget --no-check-certificate --continue --show-progress "${DL_HOME}${DL_PATH_URL}" -P "${GOTOOLS}"
-  echo "LATEST: ${LATEST}"
-  tar -xzvf "${LATEST}"; cd -
-  export GOBIN="${GOTOOLS}/bin"
-  export GOPATH="${GOTOOLS}/src"
-  export PATH="${PATH}:${GOBIN}"
-  unset GOTOOLS, DL_HOME, DL_PATH_URL, LATEST_VERSION_PATTERN, LATEST
+  apk update||apt-get update||yum update -y
+  apk add go||apt-get install -y golang||yum install -y go
 }
 
 function jpeg_to_png() {

@@ -6,29 +6,23 @@
 #                   binary to generate unique random image series                                                                                           
 # Author       	  : Pierre Baconnier                                                
 # Email           : pbackz@gmail.com
-# Last updated on : 2021/04/12                                         
+# Last updated on : 2021/13/09                                         
 ###################################################################
 
 source ./utils.sh
 enable_strict_mode
-trap "cleanup_issh" SIGPIPE  # ref. 'kill -l'
 
-if ! [[ "${#}" -ge 2 ]]; then
+if ! [[ "${#}" -ge 1 ]]; then
   #usage
   exit 1
 fi
 
 function main() {
   set -- "${@}"
-  dl_issh
   use_issh
   install_requirements
   process "${@}"
 }
-
-#function usage() {
-#  #TODO
-#}
 
 function install_requirements() {
   # Ensure that latest go binary is installed
@@ -37,7 +31,10 @@ function install_requirements() {
   fi
   # Ensure that fogelman/primitive binary is installed
   if is not available "primitive"; then
-    go get -u github.com/fogleman/primitive
+    go install github.com/fogleman/primitive@latest
+  fi
+  if is not available "shuf"; then
+    apk add util-linux pciutils usbutils coreutils binutils findutils
   fi
 }
 
@@ -50,7 +47,7 @@ function process() {
   local SHAPE="${3}"
   local EXTRA_SHAPES="${4}" # flag '-rep'
   local PRIMITIVES_NB="${5}"
-  PRIMITIVE_BINARY=$(command -v primitive)
+  PRIMITIVE_BINARY=${PRIMITIVE_BINARY:-$HOME/go/bin/primitive}
   # "-j" option = Parallel workers. Default value = all cores. Ref. $(primitive --help)
   local ALPHA_VALUE=128 # default value = 128. Ref. $(primitive --help)
   local OUTPUT_IMG_SIZE=2048 # default value = 1024. Ref. $(primitive --help)
