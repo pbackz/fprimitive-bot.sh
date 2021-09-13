@@ -21,7 +21,9 @@ function enable_strict_mode() {
 function dl_issh() { 
     mkdir -p lib
     cd lib
-    wget raw.githubusercontent.com/qzb/is.sh/latest/is.sh
+    if [ -f is.sh ]; then echo; else
+      wget raw.githubusercontent.com/qzb/is.sh/latest/is.sh
+    fi
     cd -
 }
 
