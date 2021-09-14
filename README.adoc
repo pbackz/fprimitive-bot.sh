@@ -1,3 +1,5 @@
+**Note: This project is now archived. The new URL of project is https://github.com/e-monkeys-tech/fprimitive-bot.sh. This in order to allow the mutualization of the secrets used by the actions of the CI for all the repositories of the organization and no longer unitarily**
+
 = fprimitive-bot.sh
 Pierre Baconnier <pierre.baconnier@outlook.fr>
 v0.1, 2021-04-14
